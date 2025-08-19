@@ -33,11 +33,14 @@ __pycache__/
 *.env
 
 # ============================
-# Docker
+# Logs
 # ============================
 *.log
-Dockerfile
-Dockerfile.*
+
+# ============================
+# Docker
+# ============================
+# Keep Dockerfiles (Render needs them), only ignore local dockerignore
 .dockerignore
 
 # ============================
