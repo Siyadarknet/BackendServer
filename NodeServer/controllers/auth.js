@@ -8,25 +8,46 @@ const { decrypt } = require("../Utils/encryption");
 
 dotenv.config();
 
-//SignUp Handler
+// controllers/auth.js
 exports.signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password, phone } = req.body;
     const lowercasedEmail = email.toLowerCase();
 
+    //  Hash email for uniqueness
     const emailHash = crypto
       .createHash("sha256")
       .update(lowercasedEmail)
       .digest("hex");
-    const existingUser = await User.findOne({ emailHash });
+
+    // 🔍 Check if user with this email already exists
+    let existingUser = await User.findOne({ emailHash });
+
     if (existingUser) {
+      if (!existingUser.isVerified) {
+        //  Resend OTP if not verified
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        existingUser.otp = otp;
+        existingUser.otpExpire = Date.now() + 5 * 60 * 1000;
+        await existingUser.save();
+
+        sendmail("sendOtp", { email: lowercasedEmail, otp });
+
+        return res.status(200).json({
+          success: true,
+          message: "OTP resent. Please verify your account.",
+        });
+      }
+
+      // if Email already exists & verified
       return res
         .status(400)
-        .json({ success: false, message: "User already exists" });
+        .json({ success: false, message: "Email already exists" });
     }
 
+    // 🆕 Create new user
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpire = Date.now() + 5 * 60 * 1000; // 5 min
+    const otpExpire = Date.now() + 5 * 60 * 1000;
 
     const user = await User.create({
       firstName,
@@ -40,20 +61,29 @@ exports.signup = async (req, res) => {
       isVerified: false,
     });
 
-    // Send OTP via email
     sendmail("sendOtp", { email: lowercasedEmail, otp });
-
-    console.log({
-      savedEmailHash: user.emailHash,
-      decryptedEmail: user.email,
-    });
 
     return res.status(200).json({
       success: true,
       message: "OTP sent to your email/phone. Please verify.",
     });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Signup error:", error);
+
+    // 🔍 Handle duplicate errors (MongoDB unique constraint)
+    if (error.code === 11000) {
+      if (error.keyPattern?.phone) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Phone number already exists" });
+      }
+      if (error.keyPattern?.email || error.keyPattern?.emailHash) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Email already exists" });
+      }
+    }
+
     return res
       .status(500)
       .json({ success: false, message: "User can't be registered" });

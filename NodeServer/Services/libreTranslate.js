@@ -6,7 +6,7 @@ class LibreTranslateService {
     this.baseUrl =
       baseUrl || process.env.LIBRETRANSLATE_URL || "http://localhost:5000";
     this.cache = new NodeCache({ stdTTL: 60 * 60 * 24 });
-    this.enabled = process.env.LIBRETRANSLATE_ENABLED === "true" || true;
+    this.enabled = process.env.LIBRETRANSLATE_ENABLED === "true";
   }
 
   async translateText(text, targetLang, sourceLang = "en") {

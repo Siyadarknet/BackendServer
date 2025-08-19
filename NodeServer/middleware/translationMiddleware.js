@@ -39,7 +39,7 @@ const TranslationMiddleware = (fieldsConfig = {}) => {
       try {
         const targetLang = getTargetLang(req);
         const srcLang = req.headers["x-source-lang"] || "en";
-        if (!targetLang || targetLang === srcLang || targetLang === "en") {
+        if (!targetLang || targetLang === srcLang) {
           return origJson(payload);
         }
 
