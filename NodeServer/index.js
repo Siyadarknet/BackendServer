@@ -31,10 +31,9 @@ app.use((req, res, next) => {
 //  Secure CORS
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*", // allow all origins (mobile apps, APIs, etc.)
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
   })
 );
 

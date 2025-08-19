@@ -2,7 +2,7 @@
 FROM libretranslate/libretranslate:latest
 
 # Limit to only needed languages to keep image/model downloads small
-ENV LT_LOAD_ONLY=en,hi,pa
+ENV LT_LOAD_ONLY=en,hi
 # Automatically fetch/update models on boot (be mindful: slows cold starts)
 ENV LT_UPDATE_MODELS=true
 
