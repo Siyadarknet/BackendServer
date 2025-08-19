@@ -1,0 +1,49 @@
+# ============================
+# Node (NodeServer)
+# ============================
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# ============================
+# Python (FlaskServer)
+# ============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.ipynb_checkpoints
+
+# Ignore all pickle files EXCEPT the production model
+*.pkl
+!FlaskServer/model5.pkl
+
+# ============================
+# Jupyter notebooks
+# (keep training notebooks out of prod)
+# ============================
+*.ipynb
+
+# ============================
+# Env files (NEVER commit secrets)
+# ============================
+.env
+*.env
+
+# ============================
+# Docker
+# ============================
+*.log
+Dockerfile
+Dockerfile.*
+.dockerignore
+
+# ============================
+# OS / Editor junk
+# ============================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
