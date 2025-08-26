@@ -11,6 +11,10 @@ const {
   TranslationMiddleware,
 } = require("../middleware/translationMiddleware");
 
+const fieldsToTranslate = {
+  array: ["title", "description", "location"],
+};
+
 // All routes require authentication
 router.use(verifyToken);
 
@@ -18,10 +22,14 @@ router.use(verifyToken);
 router.post("/createEvent", createEvent);
 
 // Get only future events (basic) — supports ?lang=xx
-router.get("/getEvents", TranslationMiddleware, getEvents);
+router.get("/getEvents", TranslationMiddleware(fieldsToTranslate), getEvents);
 
 // Get events with filters: ?filter=upcoming | past | all — supports ?lang=xx
-router.get("/events", TranslationMiddleware, getFilteredEvents);
+router.get(
+  "/events",
+  TranslationMiddleware(fieldsToTranslate),
+  getFilteredEvents
+);
 
 // Register for a specific event
 router.post("/registerEvent/:eventId", registerForEvent);

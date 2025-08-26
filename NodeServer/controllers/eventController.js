@@ -16,13 +16,16 @@ exports.createEvent = async (req, res) => {
   }
 };
 
-// Get all upcoming events 
+// Get all upcoming events
+// Get all upcoming events
 exports.getEvents = async (req, res) => {
   console.log("Hit on get events");
   try {
     const events = await Event.find({ eventDate: { $gte: new Date() } }).sort(
       "eventDate"
     );
+    // Remove the `.toObject()` call. The TranslationMiddleware
+    // will handle this for you.
     res.status(200).json(events);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch events" });
@@ -30,6 +33,7 @@ exports.getEvents = async (req, res) => {
 };
 
 //  Get events with optional filter (upcoming / past / all)
+//  Get events with optional filter (upcoming / past / all)
 exports.getFilteredEvents = async (req, res) => {
   const filter = req.query.filter || "upcoming";
   const now = new Date();
@@ -45,18 +49,12 @@ exports.getFilteredEvents = async (req, res) => {
       return res.status(400).json({ message: "Invalid filter" });
     }
 
-    const events = await Event.find(query).sort("eventDate");
+    const events = await Event.find(query).sort("eventDate"); // Corrected logic: Use Mongoose's virtuals or append the property // to the Mongoose object before returning it. The middleware // will handle the toObject call, triggering the getters.
 
-    // Append status field to each event
-    const eventsWithStatus = events.map((event) => {
-      const status = new Date(event.eventDate) >= now ? "Upcoming" : "Past";
-      return {
-        ...event.toObject(),
-        status,
-      };
+    events.forEach((event) => {
+      event.status = new Date(event.eventDate) >= now ? "Upcoming" : "Past";
     });
-
-    res.status(200).json(eventsWithStatus);
+    res.status(200).json(events);
   } catch (err) {
     res.status(500).json({
       message: "Failed to fetch filtered events",
@@ -64,7 +62,6 @@ exports.getFilteredEvents = async (req, res) => {
     });
   }
 };
-
 // Register a user for an event
 exports.registerForEvent = async (req, res) => {
   try {
@@ -78,7 +75,7 @@ exports.registerForEvent = async (req, res) => {
     }
 
     const alreadyRegistered = event.registeredUsers.some(
-      (entry) => entry.user.toString() === req.user.id 
+      (entry) => entry.user.toString() === req.user.id
     );
 
     if (alreadyRegistered)
