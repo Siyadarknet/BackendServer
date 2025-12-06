@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Ping ML Server
         run: |
-          curl -s https://ml-app.onrender.com/health || echo "ML server ping failed"
+          curl -s https://sofia-ml.onrender.com/ || echo "ML server ping failed"
 
       - name: Ping Node Server
         run: |
-          curl -s https://node-app.onrender.com/health || echo "Node server ping failed"
+          curl -s https://sofia-node.onrender.com/ || echo "Node server ping failed"
