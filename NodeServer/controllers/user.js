@@ -16,15 +16,17 @@ exports.getUserProfile = async (req, res) => {
     const completedArticleIds = await getUsersCompletedArticles(req.user.id);
 
     res.status(200).json({
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      currentLiteracyLevel: user.currentLiteracyLevel,
-      completedArticles: completedArticleIds,
-      earnedBadges: user.earnedBadges,
-      createdAt: user.createdAt,
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        currentLiteracyLevel: user.currentLiteracyLevel,
+        completedArticles: completedArticleIds,
+        earnedBadges: user.earnedBadges,
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
     console.error("Error fetching user profile:", error);
@@ -46,6 +48,7 @@ exports.updateUserProfile = async (req, res) => {
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
     user.phone = phone || user.phone;
+    // user.email = email || user.email;
 
     await user.save();
 
