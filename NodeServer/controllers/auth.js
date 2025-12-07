@@ -177,8 +177,8 @@ exports.verifyOtp = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
 
-    user.otp = undefined;
-    user.otpExpire = undefined;
+    // user.otp = undefined;
+    // user.otpExpire = undefined;
 
     if (!user.isVerified) {
       user.isVerified = true;
@@ -225,7 +225,15 @@ exports.forgetPassword = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.otp = otp;
     user.otpExpire = Date.now() + 5 * 60 * 1000; // 5 minutes
-    await user.save();
+    await User.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          otp: otp,
+          otpExpire: Date.now() + 5 * 60 * 1000,
+        },
+      }
+    );
 
     sendmail("sendOtp", { email: user.email, otp });
 
