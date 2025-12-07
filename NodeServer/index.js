@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 //  Secure CORS
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://financialadvisorysystem.netlify.app/", // Your production frontend URL
+  "https://financialadvisorysystem.netlify.app", // Your production frontend URL
 ];
 
 app.use(
