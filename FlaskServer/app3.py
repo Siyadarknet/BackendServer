@@ -21,7 +21,7 @@ except Exception as e:
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Flask backend is running! 🚀"
+    return "Flask backend is running! "
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -52,7 +52,7 @@ def predict():
         return jsonify(result)
 
     except Exception as e:
-        print(f"🔥 Error in /predict: {e}")
+        print(f" Error in /predict: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
