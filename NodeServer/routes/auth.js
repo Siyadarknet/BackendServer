@@ -5,20 +5,18 @@ const {
   login,
   forgetPassword,
   verifyOtp,
-  updatePasswordWithOtp, // ✅ Import the new OTP-based password reset function
+  updatePasswordWithOtp,
 } = require("../controllers/auth");
 
 const rateLimit = require("express-rate-limit");
 const { body, validationResult } = require("express-validator");
 
-// ✅ Rate limiting for sensitive routes
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min window
   max: 10, // max 10 requests per IP
   message: "Too many attempts from this IP, please try again later.",
 });
 
-// ✅ Validate email, phone, password (strong)
 const validateSignup = [
   body("firstName").notEmpty().withMessage("First name is required"),
   body("lastName").notEmpty().withMessage("Last name is required"),
@@ -42,7 +40,6 @@ const validateSignup = [
   },
 ];
 
-// ✅ Validate login
 const validateLogin = [
   body("email").isEmail().withMessage("Valid email required"),
   body("password").notEmpty().withMessage("Password required"),
@@ -54,7 +51,6 @@ const validateLogin = [
   },
 ];
 
-// ✅ Validate OTP
 const validateOtp = [
   body("email").isEmail().withMessage("Valid email required"),
   body("otp")
@@ -72,7 +68,6 @@ const validateOtp = [
   },
 ];
 
-// ✅ New validator for updating password with OTP
 const validateUpdatePasswordWithOtp = [
   body("email").isEmail().withMessage("Valid email is required"),
   body("otp")

@@ -31,13 +31,13 @@ app.use((req, res, next) => {
 //  Secure CORS
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://financialadvisorysystem.netlify.app", // Your production frontend URL
+  "https://financialadvisorysystem.netlify.app",
+  "http://localhost:54600/",
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) === -1) {
         var msg =
@@ -50,7 +50,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  })
+  }),
 );
 
 //  Import routes

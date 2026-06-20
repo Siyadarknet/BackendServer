@@ -37,17 +37,12 @@ exports.getAllArticles = async (req, res) => {
   }
 };
 
-// @desc    Get articles by Module ID
-// @route   GET /api/v1/articles/module/:moduleId
-// @access  Public
-
 //getArticles By module id
 exports.getArticlesByModuleId = async (req, res) => {
-  // fetch moduleId from req params
+  // fetching moduleId from req params
   const { moduleId } = req.params;
 
   try {
-    // check for ObjectId validation
     if (!mongoose.Types.ObjectId.isValid(moduleId)) {
       console.log(`Invalid moduleId format: ${moduleId}`);
       return res.status(400).json({ message: "Invalid Module ID format." });
@@ -62,7 +57,6 @@ exports.getArticlesByModuleId = async (req, res) => {
       .sort({ createdAt: 1 });
     console.log(`Direct query found ${articles.length} articles`);
 
-    // Fallback: Use module's articles array if direct query fails
     if (articles.length === 0) {
       console.log(
         `Falling back to module's articles array for moduleId: ${moduleId}`
