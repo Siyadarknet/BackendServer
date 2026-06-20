@@ -196,3 +196,11 @@ exports.resetPassword = async (req, res) => {
     });
   }
 };
+
+exports.verifyOtp = async (req, res) => {
+  // code
+};
+
+exports.updatePasswordWithOtp = async (req, res) => {
+  // code
+};
