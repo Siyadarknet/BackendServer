@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 const allowedOrigins = [
   "http://localhost:5173",
   "https://financialadvisorysystem.netlify.app",
-  "http://localhost:54600/",
+  "http://localhost:54600",
 ];
 
 app.use(
