@@ -22,7 +22,7 @@ exports.getEvents = async (req, res) => {
   console.log("Hit on get events");
   try {
     const events = await Event.find({ eventDate: { $gte: new Date() } }).sort(
-      "eventDate"
+      "eventDate",
     );
     // Remove the `.toObject()` call. The TranslationMiddleware
     // will handle this for you.
@@ -49,12 +49,17 @@ exports.getFilteredEvents = async (req, res) => {
       return res.status(400).json({ message: "Invalid filter" });
     }
 
-    const events = await Event.find(query).sort("eventDate"); // Corrected logic: Use Mongoose's virtuals or append the property // to the Mongoose object before returning it. The middleware // will handle the toObject call, triggering the getters.
+    // 1. Fetch the documents from MongoDB
+    const events = await Event.find(query).sort("eventDate");
 
-    events.forEach((event) => {
-      event.status = new Date(event.eventDate) >= now ? "Upcoming" : "Past";
+    const sanitizedEvents = events.map((event) => {
+      const eventObj = event.toObject({ getters: true });
+      eventObj.status = new Date(event.eventDate) >= now ? "upcoming" : "past"; // Lowercase to match Flutter safely
+      return eventObj;
     });
-    res.status(200).json(events);
+
+    // 3. Return the sanitized array
+    res.status(200).json(sanitizedEvents);
   } catch (err) {
     res.status(500).json({
       message: "Failed to fetch filtered events",
@@ -75,7 +80,7 @@ exports.registerForEvent = async (req, res) => {
     }
 
     const alreadyRegistered = event.registeredUsers.some(
-      (entry) => entry.user.toString() === req.user.id
+      (entry) => entry.user.toString() === req.user.id,
     );
 
     if (alreadyRegistered)
